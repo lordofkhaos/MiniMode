@@ -1,9 +1,14 @@
+using System.Linq;
+using Smod2.API;
 using Smod2.EventHandlers;
 using Smod2.Events;
 
 namespace MiniMode
 {
-	public class HandlerOfEvents : IEventHandlerWaitingForPlayers, IEventHandlerRoundStart, IEventHandlerUpdate
+	public class HandlerOfEvents : IEventHandlerWaitingForPlayers,
+		IEventHandlerRoundStart,
+		IEventHandlerUpdate,
+		IEventHandlerDoorAccess
 	{
 		private readonly MiniModePlugin _plugin;
 		private bool _fixedGuardSpawns = false;
@@ -34,6 +39,14 @@ namespace MiniMode
 		{
 			Utilities utilities = new Utilities(_plugin);
 			utilities.CheckForEscapees();
+		}
+
+		public void OnDoorAccess(PlayerDoorAccessEvent ev)
+		{
+			if (ev.Player.TeamRole.Team == Team.NINETAILFOX ||
+			    ev.Player.TeamRole.Team == Team.CHAOS_INSURGENCY &&
+			    ev.Door == _plugin.Server.Map.GetDoors().Where(x => x.Position.y < 7979).First()) // pseudo code
+				ev.Allow = false;
 		}
 	}
 }
