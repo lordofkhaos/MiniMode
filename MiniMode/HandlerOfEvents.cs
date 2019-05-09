@@ -1,7 +1,7 @@
 using System.Linq;
-using Smod2.API;
 using Smod2.EventHandlers;
 using Smod2.Events;
+using SmodTeam = Smod2.API.Team;
 
 namespace MiniMode
 {
@@ -43,8 +43,8 @@ namespace MiniMode
 
 		public void OnDoorAccess(PlayerDoorAccessEvent ev)
 		{
-			if (ev.Player.TeamRole.Team == Team.NINETAILFOX ||
-			    ev.Player.TeamRole.Team == Team.CHAOS_INSURGENCY &&
+			if (ev.Player.TeamRole.Team == SmodTeam.NINETAILFOX ||
+			    ev.Player.TeamRole.Team == SmodTeam.CHAOS_INSURGENCY &&
 			    ev.Door == _plugin.Server.Map.GetDoors().Where(x => x.Position.y < 7979).First()) // pseudo code
 				ev.Allow = false;
 		}

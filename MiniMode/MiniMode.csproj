@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Assembly-CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Smod2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Smod2.dll</HintPath>
     </Reference>
