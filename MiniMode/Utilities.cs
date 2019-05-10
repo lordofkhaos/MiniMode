@@ -1,5 +1,6 @@
 using Smod2.API;
 using SmodTeam = Smod2.API.Team;
+using UnityEngine;
 
 namespace MiniMode
 {
@@ -17,11 +18,11 @@ namespace MiniMode
 			foreach (Player player in this._plugin.Server.GetPlayers())
 			{
 				float yAxisLocation = player.GetPosition().y;
-				if (yAxisLocation > 900 && player.TeamRole.Team == (SmodTeam.CLASSD | SmodTeam.SCIENTIST)) // or whatever -> in LCZ
-					player.Teleport(player.TeamRole.Team == SmodTeam.CLASSD ? new Vector(0, 0, 0) : new Vector(1, 0, 0)); // placeholder
+				if (!(yAxisLocation > 0) || !(yAxisLocation < 900) ||
+				    player.TeamRole.Team != (SmodTeam.CLASSD | SmodTeam.SCIENTIST)) continue;
+				GameObject ply = (GameObject) player.GetGameObject();
+				ply.GetComponent<CharacterClassManager>().RegisterEscape();
 			}
-			
-			throw new System.NotImplementedException();
 		}
 	}
 }
