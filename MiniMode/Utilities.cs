@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Smod2.API;
-using SmodTeam = Smod2.API.Team;
 using UnityEngine;
+using SmodTeam = Smod2.API.Team;
+using Random = System.Random;
 
 namespace MiniMode
 {
@@ -15,11 +17,13 @@ namespace MiniMode
 		
 		public void CheckForEscapees()
 		{
+			Random rnd = new Random();
+			List<Vector> scientistSpawns = _plugin.Server.Map.GetSpawnPoints(Role.SCIENTIST);
 			foreach (Player player in this._plugin.Server.GetPlayers())
 			{
 				float yAxisLocation = player.GetPosition().y;
-				if (!(yAxisLocation > 0) || !(yAxisLocation < 900) ||
-				    player.TeamRole.Team != (SmodTeam.CLASSD | SmodTeam.SCIENTIST)) continue;
+				if (yAxisLocation < 0 || yAxisLocation > 900 ||
+				    player.TeamRole.Team != (SmodTeam.CLASSD | SmodTeam.SCIENTIST)) player.Teleport(scientistSpawns[rnd.Next(0, scientistSpawns.Count)]);
 				GameObject ply = (GameObject) player.GetGameObject();
 				ply.GetComponent<CharacterClassManager>().RegisterEscape();
 			}
