@@ -14,10 +14,12 @@ namespace MiniMode
 		IEventHandlerSetRole
 	{
 		private readonly MiniModePlugin _plugin;
+		private readonly Utilities _utilities;
 
 		public HandlerOfEvents(MiniModePlugin plugin)
 		{
 			this._plugin = plugin;
+			this._utilities = new Utilities(this._plugin);
 		}
 
 		public void OnWaitingForPlayers(WaitingForPlayersEvent ev)
@@ -28,15 +30,24 @@ namespace MiniMode
 				_plugin.PluginManager.DisablePlugin(_plugin);
 		}
 
-		public void OnRoundStart(RoundStartEvent ev) =>
-			_plugin.Info(ev.Server.NumPlayers > _plugin.MaxPlayers
-				? "Max players threshold reached, resuming normal rounds"
-				: "Beginning mini round");
+		public void OnRoundStart(RoundStartEvent ev)
+		{
+			if (ev.Server.NumPlayers > _plugin.MaxPlayers)
+			{
+				_plugin.Info("Max players threshold reached, resuming normal rounds");
+				_utilities.Active = false;
+			}
+			else
+			{
+				_plugin.Info("Beginning mini round");
+				_utilities.Active = true;
+			}
+		}
 
 		public void OnUpdate(UpdateEvent ev)
 		{
-			Utilities utilities = new Utilities(_plugin);
-			utilities.CheckForEscapees();
+			if (_utilities.Active)
+				_utilities.CheckForEscapees();
 		}
 
 		/*public void OnDoorAccess(PlayerDoorAccessEvent ev)
@@ -51,7 +62,7 @@ namespace MiniMode
 
 		public void OnSetRole(PlayerSetRoleEvent ev)
 		{
-			if (ev.Role != Role.FACILITY_GUARD) return;
+			if (!_utilities.Active || ev.Role != Role.FACILITY_GUARD) return;
 			Random rnd = new Random();
 			DateTime toTime = DateTime.UtcNow.AddSeconds(3);
 			while (true)

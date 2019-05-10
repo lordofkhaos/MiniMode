@@ -8,6 +8,7 @@ namespace MiniMode
 {
 	public class Utilities
 	{
+		public bool Active;
 		private readonly MiniModePlugin _plugin;
 		
 		public Utilities(MiniModePlugin plugin)
