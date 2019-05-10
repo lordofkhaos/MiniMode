@@ -1,4 +1,6 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using Smod2.API;
 using Smod2.EventHandlers;
 using Smod2.Events;
 using SmodTeam = Smod2.API.Team;
@@ -8,10 +10,10 @@ namespace MiniMode
 	public class HandlerOfEvents : IEventHandlerWaitingForPlayers,
 		IEventHandlerRoundStart,
 		IEventHandlerUpdate,
-		IEventHandlerDoorAccess
+	//	IEventHandlerDoorAccess,
+		IEventHandlerSetRole
 	{
 		private readonly MiniModePlugin _plugin;
-		private bool _fixedGuardSpawns = false;
 
 		public HandlerOfEvents(MiniModePlugin plugin)
 		{
@@ -24,13 +26,6 @@ namespace MiniMode
 			
 			if (!_plugin.Enabled)
 				_plugin.PluginManager.DisablePlugin(_plugin);
-			
-			if (!this._fixedGuardSpawns)
-			{
-				// fix guard spawns
-
-				this._fixedGuardSpawns = true;
-			}
 		}
 
 		public void OnRoundStart(RoundStartEvent ev) =>
@@ -44,12 +39,29 @@ namespace MiniMode
 			utilities.CheckForEscapees();
 		}
 
-		public void OnDoorAccess(PlayerDoorAccessEvent ev)
+		/*public void OnDoorAccess(PlayerDoorAccessEvent ev)
 		{
 			if (ev.Player.TeamRole.Team == SmodTeam.NINETAILFOX ||
 			    ev.Player.TeamRole.Team == SmodTeam.CHAOS_INSURGENCY &&
 			    ev.Door == _plugin.Server.Map.GetDoors().Where(x => x.Position.y < 7979).First()) // pseudo code
+			{
 				ev.Allow = false;
+			}
+		}*/
+
+		public void OnSetRole(PlayerSetRoleEvent ev)
+		{
+			if (ev.Role != Role.FACILITY_GUARD) return;
+			Random rnd = new Random();
+			DateTime toTime = DateTime.UtcNow.AddSeconds(3);
+			while (true)
+			{
+				if (DateTime.UtcNow < toTime)
+					continue;
+				List<Vector> scientistSpawns = _plugin.Server.Map.GetSpawnPoints(Role.SCIENTIST);
+				ev.Player.Teleport(scientistSpawns[rnd.Next(0, scientistSpawns.Count)]);
+				break;
+			}
 		}
 	}
 }

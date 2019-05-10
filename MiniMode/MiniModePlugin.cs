@@ -35,6 +35,7 @@ namespace MiniMode
 			this.AddEventHandler(typeof(IEventHandlerRoundStart), _eventHandler);
 			this.AddEventHandler(typeof(IEventHandlerUpdate), _eventHandler);
 			this.AddEventHandler(typeof(IEventHandlerDoorAccess), _eventHandler);
+			this.AddEventHandler(typeof(IEventHandlerSetRole), _eventHandler);
 		}
 
 		public override void OnEnable()
