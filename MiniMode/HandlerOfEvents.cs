@@ -12,8 +12,11 @@ namespace MiniMode
 	{
 		private readonly MiniModePlugin _plugin;
 		private bool _fixedGuardSpawns = false;
-		
-		public HandlerOfEvents(MiniModePlugin plugin) => this._plugin = plugin;
+
+		public HandlerOfEvents(MiniModePlugin plugin)
+		{
+			this._plugin = plugin;
+		}
 
 		public void OnWaitingForPlayers(WaitingForPlayersEvent ev)
 		{
